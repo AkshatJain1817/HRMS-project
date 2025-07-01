@@ -2,27 +2,20 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/user.model');
 const bcrypt = require('bcryptjs');
 
-exports.authenticateUser = async (req, res, next) => {
-    const { email, password } = req.body;
-
-    try {
-        const user = await User.findOne({ email });
-        if (!user) {
-            return res.status(401).json({ message: 'Invalid email or password' });
+const protect = async (req, res, next) => {
+    let token = req.headers.authorization;
+    if(token && token.startsWith('Bearer')) {
+        try{
+            token = token.split(' ')[1];
+            const decoded = jwt.verify(token, process.env.JWT_SECRET);
+            req.user = await User.findById(decoded.id).select('-password');
+            next();
+        }catch(err) {
+            res.status(401).json({ message: 'Not authorized' });
         }
-
-        const isMatch = await bcrypt.compare(password, user.password);
-        if (!isMatch) {
-            return res.status(401).json({ message: 'Invalid email or password' });
-        }
-
-        const token = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET, {
-            expiresIn: '10 hours',
-        });
-
-        res.status(200).json({ token });
-    } catch (error) {
-        console.error('Error authenticating user:', error);
-        res.status(500).json({ message: 'Internal server error' });
+    }else{
+        res.status(401).json({ message: 'No token provided, authorization denied' });
     }
 };
+
+module.exports = protect;
