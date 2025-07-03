@@ -7,9 +7,9 @@ exports.registerEmployee = async (req, res) => {
 
     const { email, password } = req.body;
     try {
-        const existingEmployee = await User.findOne({ email, role: 'hr' });
+        const existingEmployee = await User.findOne({ email, role: 'employee' });
         if (existingEmployee) {
-            return res.status(400).json({ message: 'HR already exists' });
+            return res.status(400).json({ message: 'Employee already exists' });
         }
 
         const salt = await bcrypt.genSalt(10);
@@ -18,7 +18,8 @@ exports.registerEmployee = async (req, res) => {
         const employee = new User({
             email,
             password: hashedPassword,
-            role: 'employee'
+            role: 'employee',
+            isnewEmployee: true,
         });
 
         await employee.save();

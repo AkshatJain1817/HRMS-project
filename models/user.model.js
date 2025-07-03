@@ -26,10 +26,22 @@ const userSchema = new mongoose.Schema({
         type: String,
         default: 'General',
     },
-    performanceReviews: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'PerformanceReview',
-    }],
+    position: {
+        type: String,
+        default: 'Staff',
+    },
+    isnewEmployee: {
+        type: Boolean,
+        default: true,
+    },
+    createdAt: {
+        type: Date,
+        default: Date.now,
+    },
+    onLeave: {
+        type: Boolean,
+        default: false,
+    },
 });
 
 const User = mongoose.model('User', userSchema);
