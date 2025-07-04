@@ -20,11 +20,13 @@ const authRoutes = require('./routes/auth.routes');
 const superAdminRoutes = require('./routes/superAdmin.routes');
 const hrRoutes = require('./routes/hr.routes');
 const leaveRoutes = require('./routes/leave.routes');
+const taskRoutes = require('./routes/task.routes');
 
 // Define routes
 app.use('/auth', authRoutes);
 app.use('/super-admin', superAdminRoutes);
 app.use('/hr', hrRoutes);
+app.use('/tasks', taskRoutes);
 app.use('/leave', leaveRoutes);
 
 const PORT = process.env.PORT || 5001;
