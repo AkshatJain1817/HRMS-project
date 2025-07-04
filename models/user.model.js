@@ -39,8 +39,9 @@ const userSchema = new mongoose.Schema({
         default: Date.now,
     },
     onLeave: {
-        type: Boolean,
-        default: false,
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'LeaveRequest',
+        default: null,
     },
 });
 

@@ -31,7 +31,6 @@ exports.loginUser = async (req, res) => {
             role: user.role,
             token: generateToken(user._id, user.role)
         });
-
     }catch (error) {
         console.error('Error logging in user:', error);
         res.status(500).json({ message: 'Internal server error' });
