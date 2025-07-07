@@ -83,41 +83,44 @@ exports.getNumberOfAllEmployees = async (req,res) => {
     }
 }
 
-//get all employees who are on leave
+// Get all employees currently on leave
 exports.getAllEmployeesOnLeave = async (req, res) => {
-    try{
-        const employeesOnLeave = await User.find({ onLeave: true}).select('-password -__v');
-        if (employeesOnLeave.length === 0) {
-            return res.status(404).json({ message: 'No employees on leave found' });
-        }
+  try {
+    const employeesOnLeave = await User.find({ onLeave: { $ne: null } }).select('-password -__v');
 
-        res.status(200).json({
-            message: 'Employees on leave retrieved successfully',
-            employeesOnLeave: employeesOnLeave.map(employee => ({
-                _id: employee._id,
-                name: employee.name,
-                email: employee.email,
-                department: employee.department,
-                position: employee.position,
-                createdAt: employee.createdAt
-            }))
-        });
-    }catch (error) {
-        console.error('Error retrieving employees on leave:', error);
-        res.status(500).json({ message: 'Internal server error' });
+    if (employeesOnLeave.length === 0) {
+      return res.status(404).json({ message: 'No employees on leave found' });
     }
-}
+
+    res.status(200).json({
+      message: 'Employees on leave retrieved successfully',
+      employeesOnLeave: employeesOnLeave.map(employee => ({
+        _id: employee._id,
+        name: employee.name,
+        email: employee.email,
+        department: employee.department,
+        position: employee.position,
+        createdAt: employee.createdAt
+      }))
+    });
+  } catch (error) {
+    console.error('Error retrieving employees on leave:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+};
+
 
 //get count of all employees who are on leave
 exports.getNumberOfEmployeesOnLeave = async (req, res) => {
-    try{
-        const count = await User.countDocuments({ onLeave: true });
-        res.status(200).json({
-            message: 'Count of employees on leave retrieved successfully',
-            count: count
-        });
-    }catch (error) {
-        console.error('Error retrieving count of employees on leave:', error);
-        res.status(500).json({ message: 'Internal server error' });
-    }
-}
+  try {
+    const count = await User.countDocuments({ onLeave: { $ne: null } });
+
+    res.status(200).json({
+      message: 'Count retrieved successfully',
+      count
+    });
+  } catch (error) {
+    console.error('Error retrieving count of employees on leave:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+};

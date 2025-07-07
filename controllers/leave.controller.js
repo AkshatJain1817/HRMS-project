@@ -1,5 +1,6 @@
 const leaveRequest = require('../models/leaveRequest.model');
 const User = require('../models/user.model');
+const Attendance = require('../models/attendance.model');
 
 exports.applyLeave = async (req, res) => {
     const { startDate, endDate, reason } = req.body;
@@ -43,11 +44,51 @@ exports.updateLeaveRequestStatus = async (req, res) => {
         if (!['approved', 'rejected'].includes(status)) {
             return res.status(400).json({ message: 'Invalid status' });
         }
-        const leaveRequestData = await leaveRequest.findByIdAndUpdate(requestId, { status }, { new: true });
+
+        const leaveRequestData = await leaveRequest.findByIdAndUpdate(
+            requestId,
+            { status },
+            { new: true }
+        )
+
         if (!leaveRequestData) {
             return res.status(404).json({ message: 'Leave request not found' });
         }
-        res.status(200).json(leaveRequestData);
+
+        if (status === 'approved') {
+            await User.findByIdAndUpdate(
+                leaveRequestData.employeeId,
+                { onLeave: leaveRequestData._id }
+            )
+
+
+            const from = new Date(leaveRequestData.startDate);
+            const to = new Date(leaveRequestData.endDate);
+
+            for (let d = new Date(from); d <= to; d.setDate(d.getDate() + 1)) {
+                const dateOnly = new Date(d.toISOString().split('T')[0]);
+
+                const alreadyExists = await Attendance.findOne({
+                    employeeId: leaveRequestData.employeeId,
+                    date: dateOnly
+                });
+
+                if (!alreadyExists) {
+                    await Attendance.create({
+                        employeeId: leaveRequestData.employeeId,
+                        date: dateOnly,
+                        status: 'Absent',
+                        isLate: false,
+                        reason: 'Leave'
+                    });
+                }
+            }
+        }
+
+        res.status(200).json({
+            message: 'Leave request status updated successfully',
+            leaveRequest
+        });
     } catch (error) {
         console.error('Error updating leave request status:', error);
         res.status(500).json({ message: 'Internal server error' });

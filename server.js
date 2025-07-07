@@ -22,6 +22,7 @@ const hrRoutes = require('./routes/hr.routes');
 const leaveRoutes = require('./routes/leave.routes');
 const taskRoutes = require('./routes/task.routes');
 const noteRoutes = require('./routes/notes.route');
+const attendanceRoutes = require('./routes/attendance.routes');
 
 // Define routes
 app.use('/auth', authRoutes);
@@ -30,6 +31,7 @@ app.use('/hr', hrRoutes);
 app.use('/tasks', taskRoutes);
 app.use('/leave', leaveRoutes);
 app.use('/notes', noteRoutes);
+app.use('/attendance', attendanceRoutes);
 
 const PORT = process.env.PORT || 5001;
 app.listen(PORT, () => {
