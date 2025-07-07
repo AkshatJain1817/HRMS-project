@@ -23,6 +23,7 @@ const leaveRoutes = require('./routes/leave.routes');
 const taskRoutes = require('./routes/task.routes');
 const noteRoutes = require('./routes/notes.route');
 const attendanceRoutes = require('./routes/attendance.routes');
+const profileRoutes = require('./routes/profile.routes');
 
 // Define routes
 app.use('/auth', authRoutes);
@@ -32,6 +33,7 @@ app.use('/tasks', taskRoutes);
 app.use('/leave', leaveRoutes);
 app.use('/notes', noteRoutes);
 app.use('/attendance', attendanceRoutes);
+app.use('/profile', profileRoutes);
 
 const PORT = process.env.PORT || 5001;
 app.listen(PORT, () => {
