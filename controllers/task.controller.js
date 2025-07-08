@@ -1,22 +1,31 @@
 const Task = require('../models/task.model');
+const User = require('../models/user.model');
 
 exports.assignTask = async (req, res) => {
-    const { title, description, assignedTo, dueDate } = req.body;
-    
-    try{
-        if(!title || !description || !assignedTo || !dueDate) {
+    const { title, description, email, dueDate } = req.body;
+
+    try {
+        if (!title || !description || !email || !dueDate) {
             return res.status(400).json({ message: 'All fields are required' });
+        }
+
+        const user = await User.findOne({ email });
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
         }
 
         const task = new Task({
             title,
             description,
-            assignedTo,
+            assignedTo: user._id,
             dueDate
         })
         const savedTask = await task.save();
-        res.status(201).json(savedTask);
-    }catch (error) {
+        res.status(201).json({
+            message: 'Task assigned successfully',
+            task: savedTask
+        });
+    } catch (error) {
         console.error('Error assigning task:', error);
         res.status(500).json({ message: 'Internal server error' });
     }
@@ -43,7 +52,7 @@ exports.updateTaskStatus = async (req, res) => {
         if (!task) {
             return res.status(404).json({ message: 'Task not found' });
         }
-        if(!['pending', 'in-progress', 'completed'].includes(status)) {
+        if (!['pending', 'in-progress', 'completed'].includes(status)) {
             return res.status(400).json({ message: 'Invalid status' });
         }
         task.status = status;
