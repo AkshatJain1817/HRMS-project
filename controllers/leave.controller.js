@@ -94,3 +94,17 @@ exports.updateLeaveRequestStatus = async (req, res) => {
         res.status(500).json({ message: 'Internal server error' });
     }
 }
+
+//employee can check their leave status old ones too
+exports.getMyLeaveRequests = async (req, res) => {
+    const employeeId = req.user.id;
+
+    try {
+        const leaveRequests = await leaveRequest.find({ employeeId })
+            .populate({ path: 'employeeId', select: 'name email' });
+        res.status(200).json(leaveRequests);
+    } catch (error) {
+        console.error('Error fetching my leave requests:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+}
