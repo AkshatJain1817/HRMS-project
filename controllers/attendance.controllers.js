@@ -90,3 +90,35 @@ exports.getEmployeeAttendanceByDate = async (req, res) => {
         res.status(500).json({ message: 'Internal server error' });
     }
 };
+
+exports.markCheckout = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const today = new Date().toISOString().split('T')[0]; 
+    const checkoutTime = new Date(req.body.checkoutTime);
+
+    
+    const attendanceRecord = await Attendance.findOne({ employeeId: userId, date: today });
+
+    if (!attendanceRecord) {
+      return res.status(404).json({ message: 'Check-in not found for today. Please check-in first.' });
+    }
+
+    if (attendanceRecord.checkoutTime) {
+      return res.status(400).json({ message: 'Checkout already marked for today.' });
+    }
+
+    attendanceRecord.checkoutTime = checkoutTime;
+    await attendanceRecord.save();
+
+    res.status(200).json({
+      message: 'Checkout marked successfully',
+      data: attendanceRecord
+    });
+  } catch (error) {
+    console.error('Error marking checkout:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+};
+
+

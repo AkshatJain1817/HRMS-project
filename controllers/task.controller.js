@@ -18,7 +18,8 @@ exports.assignTask = async (req, res) => {
             title,
             description,
             assignedTo: user._id,
-            dueDate
+            dueDate,
+            email: user.email,
         })
         const savedTask = await task.save();
         res.status(201).json({

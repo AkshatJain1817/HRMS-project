@@ -18,3 +18,6 @@ router.put('/me', protect, updateMyProfile);
 router.get('/employee/:employeeId', protect, verifyRole('hr'), getEmployeeProfile);
 
 module.exports = router;
+
+
+//check out
