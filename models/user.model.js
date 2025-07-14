@@ -43,6 +43,12 @@ const userSchema = new mongoose.Schema({
         ref: 'LeaveRequest',
         default: null,
     },
+    salary: {
+        type: Number,
+        required: true,
+        default: 10000
+    }
+
 });
 
 const User = mongoose.model('User', userSchema);

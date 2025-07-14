@@ -25,11 +25,13 @@ const noteRoutes = require('./routes/notes.route');
 const attendanceRoutes = require('./routes/attendance.routes');
 const profileRoutes = require('./routes/profile.routes');
 const performanceRoutes = require('./routes/performance.routes');
+const payrollRoutes = require('./routes/payroll.routes');
 
 // Define routes
 app.use('/auth', authRoutes);
 app.use('/super-admin', superAdminRoutes);
 app.use('/hr', hrRoutes);
+app.use('/payroll', payrollRoutes);
 app.use('/performance', performanceRoutes);
 app.use('/tasks', taskRoutes);
 app.use('/leave', leaveRoutes);
