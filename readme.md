@@ -27,16 +27,3 @@ A Human Resource Management System (HRMS) backend built with Node.js, Express an
 | Error Handling   | Centralized handlers    |
 
 ---
-
-## 📂 Project Structure
-
-HRMS-project/
-├── config/ # configuration files (db, environment etc.)
-├── controllers/ # route handlers (business logic)
-├── middleware/ # auth, validation, error handling
-├── models/ # mongoose schemas and models
-├── routes/ # express router definitions
-├── utils/ # helper modules, utilities
-├── server.js # entry point of the app
-├── package.json
-└── .gitignore
